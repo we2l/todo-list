@@ -1,24 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState} from 'react';
 
-function App() {
+import {Container, Content, Header} from './App.styles'
+
+import {Item, HandlePressEnterProps} from './Types/Item'
+import {ListItem} from './Components/ListItem'
+import { InsertItem } from './Components/InsertItem';
+
+
+const App = () => {
+  const [list, setList] = useState<Item[]>([]) 
+
+  const handlePressEnter = (inputText: HandlePressEnterProps) => {
+    setList([...list, inputText])
+  }
+
+  const handleInputChecked = (newItem: Item) => {
+    const index = list.findIndex((item) => item.id === newItem.id)
+    list[index].done = newItem.done
+    setList(list)
+
+  }
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Container>
+        <Content>
+          <Header>Lista de Tarefas</Header>
+
+          <InsertItem 
+            handlePressEnter={handlePressEnter}
+            list={list}
+          />
+          {list.length > 0 ? 
+            list.map((item,index) => (
+              <ListItem 
+                item={item} 
+                key={index}
+                handleInputChecked={handleInputChecked}
+              /> 
+            ))
+            :
+            <p>Insira uma tarefa!</p>
+          }
+          
+          
+        </Content>
+      </Container>
     </div>
   );
 }
